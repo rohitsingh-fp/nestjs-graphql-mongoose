@@ -15,19 +15,19 @@ input LoginUserInput {
 }
 
 type Mutation {
-  loginUser(loginUserData: LoginUserInput!): User!
-  registerUser(createUserData: CreateUserInput!): User!
+  loginUser(loginUserData: LoginUserInput!): UserType!
+  registerUser(createUserData: CreateUserInput!): UserType!
 }
 
 type Query {
-  getAllUser: [User!]
-  getUser(email: String, id: String): User
+  getAllUser: [UserType!]
+  getUser(email: String, id: String): UserType
 }
 
-type User {
+type UserType {
   _id: ID!
   active: Boolean!
-  confirmOtp: Float!
+  confirmOtp: Int!
   confirmToken: String!
   email: String!
   fullName: String!

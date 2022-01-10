@@ -4,7 +4,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { GraphQLError, GraphQLFormattedError } from "graphql";
 
 import { join } from "path";
-import { UserModule } from "./user/user.module";
+import { UserModule } from "./modules/user/user.module";
 
 @Module({
   imports: [

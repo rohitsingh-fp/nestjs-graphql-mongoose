@@ -2,8 +2,10 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { User, UserDocument } from "./user.schema";
-import { checkUserArgs, CreateUserInput, GetUserArgs, LoginUserInput } from "./user.typeDef";
+import { checkUserArgs, GetUserArgs } from "./user.typeDef";
 import * as jwt from "jsonwebtoken"
+import { CreateUserInput } from "./inputs/create-user.input";
+import { LoginUserInput } from "./inputs/login-user.input";
 
 @Injectable()
 export class UserService {
