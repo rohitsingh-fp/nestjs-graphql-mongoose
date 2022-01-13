@@ -2,11 +2,33 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-input CreateUserInput {
+type AuthUserResponse {
+  _id: ID!
   email: String!
-  fullName: String!
-  mobile: String!
+  firstName: String!
+  lastName: String!
+  planType: String
+  roleName: String
+  roleNo: Float
+}
+
+input ConfirmUserInput {
+  confirmToken: String!
+}
+
+input CreateUserInput {
+  ExpirationDate: String
+  confirmToken: String
+  email: String!
+  firstName: String!
+  lastName: String!
   password: String!
+  planType: String = "free"
+}
+
+type LoginResponse {
+  User: UserResponse!
+  access_token: String!
 }
 
 input LoginUserInput {
@@ -15,22 +37,20 @@ input LoginUserInput {
 }
 
 type Mutation {
-  loginUser(loginUserData: LoginUserInput!): UserType!
-  registerUser(createUserData: CreateUserInput!): UserType!
+  confirmUser(confirmInput: ConfirmUserInput!): UserResponse!
+  loginUser(loginInput: LoginUserInput!): LoginResponse!
+  registerUser(registerInput: CreateUserInput!): UserResponse!
 }
 
 type Query {
-  getAllUser: [UserType!]
-  getUser(email: String, id: String): UserType
+  authUser(email: String!): AuthUserResponse!
+  test: String!
 }
 
-type UserType {
+type UserResponse {
   _id: ID!
-  active: Boolean!
-  confirmOtp: Int!
-  confirmToken: String!
   email: String!
-  fullName: String!
-  mobile: String!
-  password: String!
+  firstName: String!
+  lastName: String!
+  roleNo: Float
 }

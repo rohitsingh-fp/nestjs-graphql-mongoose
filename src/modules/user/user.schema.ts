@@ -1,17 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
+import {Date, Document, now} from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
+export type UserDocument = User & Document;
 
 @Schema()
 export class User {
   _id: string;
 
   @Prop({ required: true })
-  fullName: string;
+  firstName: string;
 
   @Prop({ required: true })
-  mobile: string;
+  lastName: string;
 
   @Prop({ required: true, unique: true })
   email: string;
@@ -19,16 +20,34 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  confirmToken: string;
+  
+  @Prop({ required: true , default: "free"})
+  planType: string;
 
-  @Prop({ default: 0 })
-  confirmOtp: number;
+  @Prop({ required: true, default: 2 })
+  roleNo: Number;
+
+  @Prop({ required: true, default: 'client-admin' })
+  roleName: string;
 
   @Prop({ required: true, default: false })
   active: boolean;
+  
+  @Prop({ default: false })
+  gdpr: boolean;
+  
+  @Prop({type: Date, default: new Date() })
+  RegistrationDate: Date;
+  
+  @Prop({type: Date})
+  ExpirationDate: Date;
+  
+  @Prop({ required: false})
+  confirmToken: string;
+
 }
 
-export type UserDocument = User & mongoose.Document;
+
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
