@@ -1,4 +1,5 @@
 import { ObjectType, Field, ID } from "@nestjs/graphql";
+import { Date } from "mongoose";
 
 @ObjectType()
 export class AuthUserResponse {
@@ -24,4 +25,7 @@ export class AuthUserResponse {
       @Field({nullable: true})
       planType: string;
 
+      
+      @Field(() => Date, {nullable: true})
+      ExpirationDate: Date;
 }

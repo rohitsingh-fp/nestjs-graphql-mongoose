@@ -33,12 +33,8 @@ export class UserResolver {
   }
 
   @Query(() => AuthUserResponse)
-  async authUser(@Args() authUser: authUserArgs, @CurrentUser() user: any): Promise<AuthUserResponse|Error> {
-    return this.userService.authUser(authUser, user);
+  async authUser(@CurrentUser() user: any): Promise<AuthUserResponse|Error|undefined> {
+    return this.userService.authUser(user);
   }
-  
-
-
-
 
 }

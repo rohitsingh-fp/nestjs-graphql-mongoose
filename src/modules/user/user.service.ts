@@ -91,18 +91,28 @@ export class UserService {
             return new Error("please provide confirm token")
       }
   }
-  async authUser(authUser: authUserArgs, user){
-      if(user.email === authUser?.email){
-        return await this.userModel.findOne({email: user?.email});
-      }else{
+  async authUser(user){
+      let userData = await this.userModel.findOne({email: user?.email});
+      if(!userData){
         throw new Error("Not Authorized")
       }
+      return userData;
   }
 
   async checkUser(checkUserArgs: checkUserArgs) {
     return await this.userModel.findOne(checkUserArgs).count();
   }
 
+  async getAll(user){
+    if(user !== undefined && user.email === 'rohit.singh@gmail.com'){
+      return await this.userModel.find();
+    }else{
+      return {
+        status: 401,
+        message: "not Authorized"
+      }
+    }
+  }
   async generateAccessToken(user: UserResponse): Promise<string> {
     const accessTokenSecret = JWT_ACCESS_TOKEN_SECRET;
     return jwt.sign(
