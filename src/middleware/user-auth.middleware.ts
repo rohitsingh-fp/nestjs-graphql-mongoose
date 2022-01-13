@@ -12,8 +12,8 @@ export class UserAuthMiddleware implements NestMiddleware{
             jwt.verify(token, accessTokenSecret, (err, decoded) => {
                   if(err) throw new Error("User not authorized")
                   console.log("middleware ",decoded);
-                  return {decoded};
-                })
+                  return decoded;
+            })
             next();   
       }
 }

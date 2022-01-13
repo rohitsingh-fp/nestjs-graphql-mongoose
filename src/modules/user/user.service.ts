@@ -59,18 +59,19 @@ export class UserService {
   }
 
   async LoginUser(loginInput: LoginUserInput) {
-
     let countUser = await this.checkUser({ email: loginInput.email });
     if (countUser === 0) {
       throw new Error("wrong email address provided");
     }
     let userData = await this.userModel.findOne({ email: loginInput.email });
+    if(userData.active === false){
+      return new Error("Please verify your email to login your account.");
+    }
     let response = await bcrypt.compare(loginInput.password, userData.password);
     if (response) {
       let access_token = await this.generateAccessToken(userData);
       return {
-        access_token: access_token,
-        User: userData,
+        access_token: access_token
       };
     } else {
       return new Error("Password does not matched");
@@ -90,8 +91,12 @@ export class UserService {
             return new Error("please provide confirm token")
       }
   }
-  async authUser(authUser: authUserArgs){
-      return await this.userModel.findOne({email: authUser?.email});
+  async authUser(authUser: authUserArgs, user){
+      if(user.email === authUser?.email){
+        return await this.userModel.findOne({email: user?.email});
+      }else{
+        throw new Error("Not Authorized")
+      }
   }
 
   async checkUser(checkUserArgs: checkUserArgs) {

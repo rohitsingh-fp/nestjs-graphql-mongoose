@@ -1,15 +1,13 @@
 import { LoginResponse } from './response/login.response';
 import { UserService } from './user.service';
-import { Resolver, Mutation, Args, Query } from "@nestjs/graphql";
+import { Resolver, Mutation, Args, Query, GqlExecutionContext } from "@nestjs/graphql";
 import { CreateUserInput } from './dto/input/create-user.input';
 import { LoginUserInput } from './dto/input/login-user.input';
 import { UserResponse } from './response/user.response';
 import { AuthUserResponse } from './response/auth-user.response';
 import { authUserArgs } from './dto/args/auth-user.args';
 import { ConfirmUserInput } from './dto/input/confirm-user.input';
-import { Request } from '@nestjs/common';
 import { CurrentUser } from 'src/decorator/current-user.decorator';
-import { User } from './user.schema';
 
 
 
@@ -35,10 +33,11 @@ export class UserResolver {
   }
 
   @Query(() => AuthUserResponse)
-  async authUser(@Args() authUser: authUserArgs, @CurrentUser('email') email: String): Promise<AuthUserResponse|Error> {
-    console.log(email)
-    return this.userService.authUser(authUser);
+  async authUser(@Args() authUser: authUserArgs, @CurrentUser() user: any): Promise<AuthUserResponse|Error> {
+    return this.userService.authUser(authUser, user);
   }
+  
+
 
 
 
