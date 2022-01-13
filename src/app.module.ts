@@ -6,6 +6,7 @@ import { GraphQLError, GraphQLFormattedError } from "graphql";
 import { join } from "path";
 import { AppResolver } from "./app.resolver";
 import { UserModule } from "./modules/user/user.module";
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserModule } from "./modules/user/user.module";
       },
     }),
     MongooseModule.forRoot("mongodb://localhost:27017/nest-db"),
+    ConfigModule.forRoot(),
     UserModule,
   ],
   providers: [AppResolver]

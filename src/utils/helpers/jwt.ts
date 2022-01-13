@@ -1,11 +1,38 @@
-import { Context } from 'apollo-server-core';
+import { ExecutionContext } from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
 import * as jwt from 'jsonwebtoken';
-import { JWT_ACCESS_TOKEN_SECRET } from "src/config/tokens";
 
-export const verifyToken = (context: Context) => {
-      // let accessTokenSecret = JWT_ACCESS_TOKEN_SECRET;
-      // const token = req.headers.authorization ? req.headers.authorization.split(" ")[1]:null;
-      // jwt.verify(token, accessTokenSecret, (err, decoded) => {
-      // return { user_id: decoded.id, user_role: decoded.role }
-      // })
+
+export const verifyToken = async (context: ExecutionContext) => {
+      
+      let accessTokenSecret = process.env.JWT_ACCESS_TOKEN_SECRET;
+      let ctx, token;
+      if(context.getType() === 'http'){
+        // Rest Context Object    
+        let auth = context.switchToHttp().getRequest().headers.authorization
+        if(!auth) {
+          return {
+            status: 401,
+            message : "User is not authorized"
+          }
+        }
+        token = auth.split(" ")[1];
+        await jwt.verify(token, accessTokenSecret, (err, decoded) => {
+          if(err) return new Error("User not authorized")
+          if(decoded.role === 2){
+                return true;
+          }
+        })
+      }else{
+        // GraphQL Context Object    
+        ctx = GqlExecutionContext.create(context);
+        token = ctx.getContext().req.headers.authorization.split(" ")[1]
+        await jwt.verify(token, accessTokenSecret, (err, decoded) => {
+            if(err) throw new Error("User not authorized")
+            if(decoded.role === 2){
+                  return true;
+            }
+        })
+        
+      }
 }

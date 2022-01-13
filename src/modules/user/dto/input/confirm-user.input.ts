@@ -6,4 +6,6 @@ export class ConfirmUserInput {
   @Field()
   @IsNotEmpty()
   confirmToken: string;
+
+  
 }

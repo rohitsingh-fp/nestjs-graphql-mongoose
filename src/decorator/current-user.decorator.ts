@@ -1,11 +1,11 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import * as jwt from "jsonwebtoken"
-import { JWT_ACCESS_TOKEN_SECRET } from 'src/config/tokens';
+
 
 export const CurrentUser = createParamDecorator(
   async (data: Object, context: ExecutionContext) => {
-    let accessTokenSecret = JWT_ACCESS_TOKEN_SECRET;
+    let accessTokenSecret = process.env.JWT_ACCESS_TOKEN_SECRET;
     let ctx, token;
     if(context.getType() === 'http'){
       let auth = context.switchToHttp().getRequest().headers.authorization

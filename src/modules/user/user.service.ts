@@ -8,26 +8,12 @@ import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 import { CreateUserInput } from "./dto/input/create-user.input";
 import { LoginUserInput } from "./dto/input/login-user.input";
-import {
-  JWT_ACCESS_TOKEN_SECRET,
-  JWT_REFRESH_TOKEN_SECRET,
-} from "src/config/tokens";
 import { checkUserArgs } from "./dto/args/check-user.args";
 import { generateRandomString } from "src/utils/common/generateRandomString";
 import { generateFutureDate } from "src/utils/common/generateFutureDate";
-import { authUserArgs } from "./dto/args/auth-user.args";
 import { ConfirmUserInput } from "./dto/input/confirm-user.input";
 import { CookieOptions } from "express";
 
-
-
-const cookieOptions: CookieOptions = {
-      domain: 'localhost', // <- Change to your client domain
-      secure: false, // <- Should be true if !development
-      sameSite: 'strict',
-      httpOnly: true,
-      path: '/',
-    };
 
 @Injectable()
 export class UserService {
@@ -46,15 +32,15 @@ export class UserService {
       }else if (registerInput.password?.length < 6) {
             throw new Error("password should be less then 6 character long");
       }else{
-            let countUser = await this.checkUser({ email: registerInput.email });
-            if(countUser > 0) {
-                  throw new Error("Email already Exists");
-            }else{
-                  let confirmToken = await generateRandomString(16);
-                  let ExpirationDate = await generateFutureDate(15);
-                  await this.userModel.create({...registerInput, confirmToken, ExpirationDate});
-                  return await this.userModel.findOne({ email: registerInput.email });
-            }
+          let countUser = await this.checkUser({ email: registerInput.email });
+          if(countUser > 0) {
+                throw new Error("Email already Exists");
+          }else{
+                let confirmToken = await generateRandomString(16);
+                let ExpirationDate = await generateFutureDate(15);
+                await this.userModel.create({...registerInput, confirmToken, ExpirationDate});
+                return await this.userModel.findOne({ email: registerInput.email });
+          }
       }
   }
 
@@ -114,7 +100,7 @@ export class UserService {
     }
   }
   async generateAccessToken(user: UserResponse): Promise<string> {
-    const accessTokenSecret = JWT_ACCESS_TOKEN_SECRET;
+    const accessTokenSecret = process.env.JWT_ACCESS_TOKEN_SECRET;
     return jwt.sign(
       {
         id: user._id,
@@ -127,7 +113,7 @@ export class UserService {
   }
 
   async generateRefreshToken(user) {
-    const refreshTokenSecret = JWT_REFRESH_TOKEN_SECRET;
+    const refreshTokenSecret = process.env.JWT_REFRESH_TOKEN_SECRET;
     return jwt.sign(
       {
         id: user._id,

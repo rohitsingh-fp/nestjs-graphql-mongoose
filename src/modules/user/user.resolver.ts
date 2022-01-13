@@ -29,7 +29,7 @@ export class UserResolver {
 
   @Mutation(() => LoginResponse)
   async loginUser(@Args('loginInput') loginInput: LoginUserInput): Promise<LoginResponse|Error> {
-      return this.userService.LoginUser(loginInput);
+    return this.userService.LoginUser(loginInput);
   }
 
   @Query(() => AuthUserResponse)
