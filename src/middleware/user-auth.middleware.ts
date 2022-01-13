@@ -1,11 +1,19 @@
 import { Injectable, NestMiddleware } from "@nestjs/common";
-import { NextFunction, Request, Response } from "express";
+import { GqlExecutionContext } from "@nestjs/graphql";
+import { NextFunction } from "express";
+import * as jwt from 'jsonwebtoken'
+import { JWT_ACCESS_TOKEN_SECRET } from "src/config/tokens";
 
 @Injectable()
 export class UserAuthMiddleware implements NestMiddleware{
-      use(req: Request, res: Response, next: NextFunction){
-            const token = req.headers.authorization?req.headers.authorization.split(" ")[1]:null;
-            console.log("token", token);
+      use(context: GqlExecutionContext, next: NextFunction){
+            let accessTokenSecret = JWT_ACCESS_TOKEN_SECRET;
+            const token = context.getContext().req.headers.authorization.split(" ")[1];
+            jwt.verify(token, accessTokenSecret, (err, decoded) => {
+                  if(err) throw new Error("User not authorized")
+                  console.log("middleware ",decoded);
+                  return {decoded};
+                })
             next();   
       }
 }
